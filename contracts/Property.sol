@@ -4,22 +4,23 @@ pragma solidity ^0.8.24;
 
 contract Property {
 
+    address[] public signatories;
+
+    uint public minimumRequiredSignatories;
+
     struct Transaction {
         address signatory;
-        string contractDetails;
+        string agreement;
         bool isExecuted;
     }
-
     Transaction[] public transactions;
-
-    string details;
-    address[] public signatories;
-    mapping(address => bool) public isSignatory;
-    uint public minimumRequiredSignatories;
 
     mapping(uint => mapping (address => bool)) public approved;
 
-    //Only a signatories should be able to submit a transaction
+    string agreement;
+    mapping(address => bool) public isSignatory;
+
+
     modifier onlySignatory(){
         require(isSignatory[msg.sender], "not a valid signatory");
         _;
@@ -31,7 +32,7 @@ contract Property {
     }
 
     modifier notApproved(uint _transactionId){
-        require(!approved[_transactionId][msg.sender], "transaction already approved");
+        require(!approved[_transactionId][msg.sender], "transaction already approved by signatory");
         _;
     }
 
@@ -42,18 +43,18 @@ contract Property {
 
 
     constructor(address[] memory _signatories, uint _minSignatoriesRequired){
-        require(_signatories.length > 0, "signatories required");
-        require(_minSignatoriesRequired > 0 && _minSignatoriesRequired <= signatories.length, "minimum number of signatories not met");
+        require(_signatories.length >1, "atleast one signatory required");
+        require(_minSignatoriesRequired > 0 && _minSignatoriesRequired <= _signatories.length, "minimum number of signatories not met");
 
         for( uint i; i<_signatories.length; i++){
             address signatory = _signatories[i];
-            require(signatory != address(0), "invalid signatory");
+            require(signatory != address(0), "invalid signatory, signatory address should nit be empty");
             require(!isSignatory[signatory], "signatory is none unique");
 
             isSignatory[signatory] = true;
             signatories.push(signatory);
-            minimumRequiredSignatories = _minSignatoriesRequired;
         }
+        minimumRequiredSignatories = _minSignatoriesRequired;
     }
 
 
@@ -66,25 +67,32 @@ contract Property {
 
 
 
-    function submit(address _signatory, string memory _details) external onlySignatory {
-        require(bytes(_details).length > 0, "contract details cannot be empty");
-        details = _details;
+    function submit(address _initiator, string memory _agreementdDetails) public onlySignatory {
+        require(bytes(_agreementdDetails).length > 0, "contract details cannot be empty");
+        agreement = _agreementdDetails;
 
-        transactions.push(Transaction({
-            signatory: _signatory,
-            contractDetails: _details,
+        Transaction memory transaction = Transaction({
+            signatory: _initiator,
+            agreement: _agreementdDetails,
             isExecuted: false
-        }));
+        });
 
-        emit Submit(transactions.length -1, msg.sender, details);
+        transactions.push(transaction);
+
+        emit Submit(transactions.length -1, msg.sender, agreement);
     }
 
     function approve(uint _transactionId) external onlySignatory  transactionExists(_transactionId) notApproved(_transactionId) notExecuted(_transactionId){
         approved[_transactionId][msg.sender] = true;
         emit Approve(_transactionId, msg.sender);
+
+        if (_getApprovalCount(_transactionId) >= minimumRequiredSignatories){
+            _execute(_transactionId);
+        }
     }
 
-    function _getApprovalCount(uint _transactionId) private view returns (uint count) {
+
+    function _getApprovalCount(uint _transactionId) internal view returns (uint count) {
         for(uint i; i< signatories.length; i++){
             if (approved[_transactionId][signatories[i]]){
                 count += 1;
@@ -92,13 +100,13 @@ contract Property {
         }
     }
 
-    function execute(uint _transactionId) external transactionExists(_transactionId) notExecuted(_transactionId){
+    function _execute(uint _transactionId) internal  transactionExists(_transactionId) notExecuted(_transactionId){
         require(_getApprovalCount(_transactionId) >= minimumRequiredSignatories, "number of approvals less that minimum required");
         Transaction storage transaction = transactions[_transactionId];
 
-        transaction.isExecuted = true;
-
         //Persist transaction data to blockchain
+
+        transaction.isExecuted = true;
 
         emit Execute(_transactionId);
     }

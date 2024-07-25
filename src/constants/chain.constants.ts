@@ -1,33 +1,13 @@
 export const CONTRACT_ABI = [
     {
-        "inputs": [],
-        "name": "sendEthContract",
-        "outputs": [],
-        "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_user",
-                "type": "address"
-            }
-        ],
-        "name": "sendEthUser",
-        "outputs": [],
-        "stateMutability": "payable",
-        "type": "function"
-    },
-    {
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "_num",
+                "name": "_transactionId",
                 "type": "uint256"
             }
         ],
-        "name": "setValue",
+        "name": "approve",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -35,56 +15,212 @@ export const CONTRACT_ABI = [
     {
         "inputs": [
             {
+                "internalType": "address[]",
+                "name": "_signatories",
+                "type": "address[]"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_minSignatoriesRequired",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "transactionId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
                 "internalType": "address",
-                "name": "_address",
+                "name": "signatory",
                 "type": "address"
             }
         ],
-        "name": "accountBalance",
-        "outputs": [
+        "name": "Approve",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
             {
+                "indexed": true,
                 "internalType": "uint256",
-                "name": "",
+                "name": "transactionId",
                 "type": "uint256"
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        "name": "Execute",
+        "type": "event"
     },
     {
-        "inputs": [],
-        "name": "contractBalance",
-        "outputs": [
+        "anonymous": false,
+        "inputs": [
             {
+                "indexed": true,
                 "internalType": "uint256",
-                "name": "",
+                "name": "transactionId",
                 "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "signatory",
+                "type": "address"
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        "name": "Revoke",
+        "type": "event"
     },
     {
-        "inputs": [],
-        "name": "getValue",
-        "outputs": [
+        "inputs": [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "name",
-        "outputs": [
+                "internalType": "address",
+                "name": "_initiator",
+                "type": "address"
+            },
             {
                 "internalType": "string",
-                "name": "",
+                "name": "_agreementdDetails",
                 "type": "string"
+            }
+        ],
+        "name": "submit",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "transactionId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "initiator",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "contractDetails",
+                "type": "string"
+            }
+        ],
+        "name": "Submit",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "approved",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "isSignatory",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "minimumRequiredSignatories",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "signatories",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "transactions",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "signatory",
+                "type": "address"
+            },
+            {
+                "internalType": "string",
+                "name": "agreement",
+                "type": "string"
+            },
+            {
+                "internalType": "bool",
+                "name": "isExecuted",
+                "type": "bool"
             }
         ],
         "stateMutability": "view",
