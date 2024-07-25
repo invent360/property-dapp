@@ -7,7 +7,7 @@ export default function Home() {
     const router = useRouter();
 
     const newContract = async () => {
-        router.push(`/contracts`)
+        router.push(`/signatories`)
     }
 
   return (

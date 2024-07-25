@@ -19,7 +19,7 @@ contract Property {
 
     mapping(uint => mapping (address => bool)) public approved;
 
-    //Only a signatory should be able to submit a transaction
+    //Only a signatories should be able to submit a transaction
     modifier onlySignatory(){
         require(isSignatory[msg.sender], "not a valid signatory");
         _;
@@ -67,7 +67,7 @@ contract Property {
 
 
     function submit(address _signatory, string memory _details) external onlySignatory {
-        require(bytes(_details).length > 0, "Contract details cannot be empty");
+        require(bytes(_details).length > 0, "contract details cannot be empty");
         details = _details;
 
         transactions.push(Transaction({
