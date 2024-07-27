@@ -1,12 +1,37 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+/client/node_modules
+/client/.next
+/client/.yarn
+/client/.env.local
+
+/contract/node_modules
+/contract/.yarn
+/contract/.env
 /.pnp
 .pnp.js
-.yarn/install-state.gz
+client/.yarn/install-state.gz
 .yarn/cache
 .idea
+
+node_modules
+.env
+
+# Hardhat files
+/contract/cache
+/contract/artifacts
+
+# TypeChain files
+/contract/typechain
+/contract/typechain-types
+
+# solidity-coverage files
+/contract/coverage
+/contract/coverage.json
+
+# Hardhat Ignition default folder for deployments against a local node
+/contract/ignition/deployments/chain-31337
 
 # testing
 /coverage
@@ -35,4 +60,4 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
+/client/next-env.d.ts
