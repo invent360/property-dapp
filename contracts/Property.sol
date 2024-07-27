@@ -17,7 +17,6 @@ contract Property {
 
     mapping(uint => mapping (address => bool)) public approved;
 
-    string agreement;
     mapping(address => bool) public isSignatory;
 
 
@@ -43,7 +42,7 @@ contract Property {
 
 
     constructor(address[] memory _signatories, uint _minSignatoriesRequired){
-        require(_signatories.length >1, "atleast one signatory required");
+        require(_signatories.length >1, "at least one signatory required");
         require(_minSignatoriesRequired > 0 && _minSignatoriesRequired <= _signatories.length, "minimum number of signatories not met");
 
         for( uint i; i<_signatories.length; i++){
@@ -67,13 +66,13 @@ contract Property {
 
 
 
-    function submit(address _initiator, string memory _agreementdDetails) public onlySignatory {
-        require(bytes(_agreementdDetails).length > 0, "contract details cannot be empty");
-        agreement = _agreementdDetails;
+    function submit(address _initiator, string memory _agreementDetails) public onlySignatory {
+        require(bytes(_agreementDetails).length > 0, "contract details cannot be empty");
+        agreement = _agreementDetails;
 
         Transaction memory transaction = Transaction({
             signatory: _initiator,
-            agreement: _agreementdDetails,
+            agreement: _agreementDetails,
             isExecuted: false
         });
 

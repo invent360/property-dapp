@@ -23,7 +23,7 @@ export class ContractServiceImpl implements ContractService{
 
     async getSignatories(): Promise<string> {
 
-        const url = `${this.chainUrl}${this.apiKey}`;
+/*        const url = `${this.chainUrl}${this.apiKey}`;
 
         const contractABI = CONTRACT_ABI
 
@@ -36,6 +36,7 @@ export class ContractServiceImpl implements ContractService{
         } catch (error) {
             console.error("Error fetching balance:", error);
             return "Error fetching balance";
-        }
+        }*/
+        return "something";
     }
 }
